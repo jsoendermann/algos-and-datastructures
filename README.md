@@ -3,7 +3,8 @@
 - Boyer–Moore string-search
 - Skip list
 - Bloom filter
-- Binary search trees
+- Balanced binary search trees
 - Heaps
 - Priority queues
 - Hash maps
+- Splay trees
