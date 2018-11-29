@@ -16,7 +16,7 @@ describe('quick sort', () => {
     expect(res).toEqual([1, 2, 3, 4])
   })
 
-  test('sorts degenerated arrays', () => {
+  test('sorts arrays of all the same numbers', () => {
     const arr = [1, 1, 1, 1, 1, 1, 1]
     const res = quickSort(arr)
     expect(res).toEqual(arr)
