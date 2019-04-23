@@ -7,7 +7,9 @@
   "author": "Jan Soendermann <jan.soendermann+git@gmail.com>",
   "license": "Apache-2.0",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc",
+    "watch": "tsc --watch"
   },
   "devDependencies": {
     "@types/jest": "^23.3.9",
