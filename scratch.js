@@ -17,7 +17,7 @@ g.addEdge(1, 4)
 g.addEdge(2, 3)
 g.addEdge(3, 4)
 
-const parent = g.breadthFirstSearch(0, { processVertexEarly: console.log })
+const parent = g.depthFirstSearch(0, { processVertexEarly: console.log })
 
 console.log(parent)
 

@@ -20,7 +20,7 @@ abstract class Graph {
       throw new Error(`Start vertex ${start} does not exist in graph`)
     }
 
-    const parent = new Array(this.vertexCount()).fill(null)
+    const parents = new Array(this.vertexCount()).fill(null)
     const state = new Array(this.vertexCount()).fill('UNDISCOVERED')
     state[start] = 'DISCOVERED'
 
@@ -34,7 +34,7 @@ abstract class Graph {
         processEdge && processEdge(u, neighbour, edgeWeight)
         if (state[neighbour] === 'UNDISCOVERED') {
           state[neighbour] = 'DISCOVERED'
-          parent[neighbour] = u
+          parents[neighbour] = u
           queue.push(neighbour)
         }
       }
@@ -42,13 +42,39 @@ abstract class Graph {
       processVertexLate && processVertexLate(u)
     }
 
-    return parent
+    return parents
   }
 
   public depthFirstSearch(
     start: number,
     { processVertexEarly, processEdge, processVertexLate }: SearchParams,
-  ) {}
+  ) {
+    if (start > this.vertexCount() - 1) {
+      throw new Error(`Start vertex ${start} does not exist in graph`)
+    }
+
+    const parents = new Array(this.vertexCount()).fill(null)
+    const state = new Array(this.vertexCount()).fill('UNDISCOVERED')
+
+    const dfs = (u: number) => {
+      state[u] = 'DISCOVERED'
+      processVertexEarly && processVertexEarly(u)
+
+      for (const { edgeWeight, neighbour } of this.getNeighbours(u)) {
+        processEdge && processEdge(u, neighbour, edgeWeight)
+        if (state[neighbour] === 'UNDISCOVERED') {
+          parents[neighbour] = u
+          state[neighbour] = 'DISCOVERED'
+          dfs(neighbour)
+        }
+      }
+      state[u] = 'PROCESSED'
+      processVertexLate && processVertexLate(u)
+    }
+
+    dfs(start)
+    return parents
+  }
 }
 
 interface Edgenode {
