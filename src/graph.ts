@@ -185,16 +185,18 @@ export class DirectedAdjacencyMatrixGraph extends Graph {
   }
 }
 
-export class UndirectedAdjacencyListGraph extends DirectedAdjacencyListGraph {
-  addEdge(i: number, j: number, weight?: number) {
-    super.addEdge(i, j, weight)
-    super.addEdge(j, i, weight)
+const makeUndirected = DirectedGraph => {
+  return class extends DirectedGraph {
+    addEdge(i: number, j: number, weight?: number) {
+      super.addEdge(i, j, weight)
+      super.addEdge(j, i, weight)
+    }
   }
 }
 
-export class UndirectedAdjacencyMatrixGraph extends DirectedAdjacencyMatrixGraph {
-  addEdge(i: number, j: number, weight?: number) {
-    super.addEdge(i, j, weight)
-    super.addEdge(j, i, weight)
-  }
-}
+export const UndirectedAdjacencyListGraph = makeUndirected(
+  DirectedAdjacencyListGraph,
+)
+export const UndirectedAdjacencyMatrixGraph = makeUndirected(
+  DirectedAdjacencyMatrixGraph,
+)
