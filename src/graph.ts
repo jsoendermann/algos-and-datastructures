@@ -186,12 +186,12 @@ export class DirectedAdjacencyMatrixGraph extends Graph {
 }
 
 const makeUndirected = DirectedGraph => {
-  return class extends DirectedGraph {
+  return (class extends DirectedGraph {
     addEdge(i: number, j: number, weight?: number) {
       super.addEdge(i, j, weight)
       super.addEdge(j, i, weight)
     }
-  }
+  } as unknown) as typeof Graph
 }
 
 export const UndirectedAdjacencyListGraph = makeUndirected(
