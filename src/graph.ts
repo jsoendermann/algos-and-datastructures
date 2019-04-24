@@ -1,29 +1,75 @@
-interface Edgenode {
-  y: number
-  weight: number | null
-  next: Edgenode | null
-}
-
-interface Graph {
-  addVertex(): number
-  addEdge(i: number, j: number)
-}
-
 export interface SearchParams {
   processVertexEarly?: (v: number) => void
   processEdge?: (i: number, j: number, weight: number | null) => void
   processVertexLate?: (v: number) => void
 }
 
-export class DirectedAdjacencyListGraph implements Graph {
+abstract class Graph {
+  public abstract addVertex(): number
+  public abstract addEdge(i: number, j: number, weight?: number)
+  public abstract vertexCount(): number
+  public abstract getNeighbours(
+    vertex: number,
+  ): IterableIterator<{ edgeWeight: number; neighbour: number }>
+
+  public breadthFirstSearch(
+    start: number,
+    { processVertexEarly, processEdge, processVertexLate }: SearchParams,
+  ): number[] {
+    if (start > this.vertexCount() - 1) {
+      throw new Error(`Start vertex ${start} does not exist in graph`)
+    }
+
+    const parent = new Array(this.vertexCount()).fill(null)
+    const state = new Array(this.vertexCount()).fill('UNDISCOVERED')
+    state[start] = 'DISCOVERED'
+
+    const queue = [start]
+
+    while (queue.length > 0) {
+      const u = queue.shift()
+      processVertexEarly && processVertexEarly(u)
+
+      for (const { edgeWeight, neighbour } of this.getNeighbours(u)) {
+        processEdge && processEdge(u, neighbour, edgeWeight)
+        if (state[neighbour] === 'UNDISCOVERED') {
+          state[neighbour] = 'DISCOVERED'
+          parent[neighbour] = u
+          queue.push(neighbour)
+        }
+      }
+      state[u] = 'PROCESSED'
+      processVertexLate && processVertexLate(u)
+    }
+
+    return parent
+  }
+
+  public depthFirstSearch(
+    start: number,
+    { processVertexEarly, processEdge, processVertexLate }: SearchParams,
+  ) {}
+}
+
+interface Edgenode {
+  y: number
+  weight: number
+  next: Edgenode | null
+}
+
+export class DirectedAdjacencyListGraph extends Graph {
   private edges: Array<Edgenode | null> = []
+
+  vertexCount() {
+    return this.edges.length
+  }
 
   addVertex(): number {
     this.edges.push(null)
-    return this.edges.length - 1
+    return this.vertexCount() - 1
   }
 
-  addEdge(i: number, j: number) {
+  addEdge(i: number, j: number, weight?: number) {
     if (i > this.edges.length - 1) {
       throw new Error(`Origin vertix ${i} does not exist in graph`)
     }
@@ -33,50 +79,19 @@ export class DirectedAdjacencyListGraph implements Graph {
 
     const newNode: Edgenode = {
       y: j,
-      weight: null,
+      weight: weight === undefined ? 1 : weight,
       next: this.edges[i],
     }
     this.edges[i] = newNode
   }
 
-  breadthFirstSearch(
-    start: number,
-    { processVertexEarly, processEdge, processVertexLate }: SearchParams,
-  ): number[] {
-    if (start > this.edges.length - 1) {
-      throw new Error(`Start vertix ${start} does not exist in graph`)
+  *getNeighbours(vertex: number) {
+    let head = this.edges[vertex]
+    while (head) {
+      yield { edgeWeight: head.weight, neighbour: head.y }
+      head = head.next
     }
-
-    const parent = new Array(this.edges.length).fill(null)
-    const state = new Array(this.edges.length).fill('UNDISCOVERED')
-    state[start] = 'DISCOVERED'
-
-    const queue = [start]
-
-    while (queue.length > 0) {
-      const u = queue.shift()
-      processVertexEarly && processVertexEarly(u)
-      let head = this.edges[u]
-      while (head) {
-        processEdge && processEdge(u, head.y, head.weight)
-        if (state[head.y] === 'UNDISCOVERED') {
-          state[head.y] = 'DISCOVERED'
-          parent[head.y] = u
-          queue.push(head.y)
-        }
-        head = head.next
-      }
-      state[u] = 'PROCESSED'
-      processVertexLate && processVertexLate(u)
-    }
-
-    return parent
   }
-
-  depthFirstSearch(
-    start: number,
-    { processVertexEarly, processEdge, processVertexLate }: SearchParams,
-  ) {}
 
   toString() {
     if (this.edges.length === 0) {
