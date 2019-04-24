@@ -20,8 +20,8 @@ abstract class Graph {
       throw new Error(`Start vertex ${start} does not exist in graph`)
     }
 
-    const parents = new Array(this.vertexCount()).fill(null)
-    const state = new Array(this.vertexCount()).fill('UNDISCOVERED')
+    const parents = Array(this.vertexCount()).fill(null)
+    const state = Array(this.vertexCount()).fill('UNDISCOVERED')
     state[start] = 'DISCOVERED'
 
     const queue = [start]
@@ -53,8 +53,8 @@ abstract class Graph {
       throw new Error(`Start vertex ${start} does not exist in graph`)
     }
 
-    const parents = new Array(this.vertexCount()).fill(null)
-    const state = new Array(this.vertexCount()).fill('UNDISCOVERED')
+    const parents = Array(this.vertexCount()).fill(null)
+    const state = Array(this.vertexCount()).fill('UNDISCOVERED')
 
     const dfs = (u: number) => {
       state[u] = 'DISCOVERED'
@@ -96,10 +96,10 @@ export class DirectedAdjacencyListGraph extends Graph {
   }
 
   addEdge(i: number, j: number, weight?: number) {
-    if (i > this.edges.length - 1) {
+    if (i > this.vertexCount() - 1) {
       throw new Error(`Origin vertix ${i} does not exist in graph`)
     }
-    if (j > this.edges.length - 1) {
+    if (j > this.vertexCount() - 1) {
       throw new Error(`Destination vertix ${j} does not exist in graph`)
     }
 
@@ -120,11 +120,11 @@ export class DirectedAdjacencyListGraph extends Graph {
   }
 
   toString() {
-    if (this.edges.length === 0) {
+    if (this.vertexCount() === 0) {
       return '<empty graph>'
     }
     let ret = ''
-    for (let i = 0; i < this.edges.length; i++) {
+    for (let i = 0; i < this.vertexCount(); i++) {
       ret += i + ': '
       let adjacentEdges = []
       let head = this.edges[i]
@@ -139,9 +139,62 @@ export class DirectedAdjacencyListGraph extends Graph {
   }
 }
 
+export class DirectedAdjacencyMatrixGraph extends Graph {
+  private matrix: number[][] = []
+
+  vertexCount() {
+    return this.matrix.length
+  }
+
+  addVertex(): number {
+    this.matrix.forEach(row => row.push(null))
+    this.matrix.push(new Array(this.matrix.length + 1).fill(null))
+    return this.vertexCount() - 1
+  }
+
+  addEdge(i: number, j: number, weight?: number) {
+    if (i > this.vertexCount() - 1) {
+      throw new Error(`Origin vertix ${i} does not exist in graph`)
+    }
+    if (j > this.vertexCount() - 1) {
+      throw new Error(`Destination vertix ${j} does not exist in graph`)
+    }
+
+    this.matrix[i][j] = weight === undefined ? 1 : weight
+  }
+
+  *getNeighbours(vertex: number) {}
+
+  toString() {
+    let ret =
+      '   ' +
+      Array(this.vertexCount())
+        .fill('')
+        .map((_, i) => i)
+        .join(' ') +
+      '\n'
+    for (let i = 0; i < this.matrix.length; i++) {
+      ret += i + ': '
+      const row = this.matrix[i]
+      for (let j = 0; j < row.length; j++) {
+        ret += (row[j] === null ? '-' : row[j]) + ' '
+      }
+      ret += '\n'
+    }
+    return ret
+  }
+}
+
 export class UndirectedAdjacencyListGraph extends DirectedAdjacencyListGraph {
-  addEdge(i: number, j: number) {
-    super.addEdge(i, j)
-    super.addEdge(j, i)
+  addEdge(i: number, j: number, weight?: number) {
+    super.addEdge(i, j, weight)
+    super.addEdge(j, i, weight)
+  }
+}
+
+export class UndirectedAdjacencyMatrixGraph extends DirectedAdjacencyMatrixGraph {
+  addEdge(i: number, j: number, weight?: number) {
+    super.addEdge(i, j, weight)
+    super.addEdge(j, i, weight)
   }
 }
