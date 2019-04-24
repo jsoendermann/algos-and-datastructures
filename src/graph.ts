@@ -163,7 +163,15 @@ export class DirectedAdjacencyMatrixGraph extends Graph {
     this.matrix[i][j] = weight === undefined ? 1 : weight
   }
 
-  *getNeighbours(vertex: number) {}
+  *getNeighbours(vertex: number) {
+    for (let i = 0; i < this.vertexCount(); i++) {
+      const weight = this.matrix[vertex][i]
+      if (weight === null) {
+        continue
+      }
+      yield { edgeWeight: weight, neighbour: i }
+    }
+  }
 
   toString() {
     let ret =

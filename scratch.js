@@ -21,4 +21,26 @@ g.addEdge(3, 4)
 
 // console.log(parent)
 
+function searchRoute(g, start, end) {
+  const seenNodes = {}
+  let didFindRoute = false
+  const dfs = u => {
+    seenNodes[u] = true
+    for (const { neighbour } of g.getNeighbours(u)) {
+      if (neighbour === end) {
+        didFindRoute = true
+        return
+      }
+      if (!seenNodes[neighbour]) {
+        seenNodes[neighbour] = true
+        dfs(neighbour)
+      }
+    }
+  }
+  dfs(start)
+  return didFindRoute
+}
+
+console.log(searchRoute(g, 0, 3))
+
 console.log(g.toString())
