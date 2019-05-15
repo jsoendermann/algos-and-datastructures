@@ -1,10 +1,27 @@
-const Mean = require('./dist/mean').default
+const RedBlackTree = require('./dist/binary-search-tree').RedBlackTree
+const Node = require('./dist/binary-search-tree').Node
 
-const m = new Mean()
-m.addElements([1, 2, 3])
-console.log(m.getMean())
-m.addElements([4])
-console.log(m.getMean())
+const root = new Node(-1)
+const t = new Node(0)
+const newRoot = new Node(1)
+const subtree = new Node(2)
+root.left = t
+t.left = newRoot
+newRoot.right = subtree
+
+console.log(root.toString())
+
+t.rotateRight()
+
+console.log(root.toString())
+
+// const Mean = require('./dist/mean').default
+
+// const m = new Mean()
+// m.addElements([1, 2, 3])
+// console.log(m.getMean())
+// m.addElements([4])
+// console.log(m.getMean())
 
 // const Trie = require('./dist/trie').Trie
 
