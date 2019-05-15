@@ -1,15 +1,23 @@
-const Trie = require('./dist/trie').Trie
+const Mean = require('./dist/mean').default
 
-const t = new Trie(['arst', 'ars', 'b', 'zxv', ''])
-// console.log(t.toString())
+const m = new Mean()
+m.addElements([1, 2, 3])
+console.log(m.getMean())
+m.addElements([4])
+console.log(m.getMean())
 
-// console.log(t.contains(''))
-// console.log(t.contains('ar'))
-// console.log(t.contains('arst'))
-// console.log(t.contains('brs'))
+// const Trie = require('./dist/trie').Trie
 
-console.log(t.contains('zx'))
-console.log(t.containsPrefix('zx'))
+// const t = new Trie(['arst', 'ars', 'b', 'zxv', ''])
+// // console.log(t.toString())
+
+// // console.log(t.contains(''))
+// // console.log(t.contains('ar'))
+// // console.log(t.contains('arst'))
+// // console.log(t.contains('brs'))
+
+// console.log(t.contains('zx'))
+// console.log(t.containsPrefix('zx'))
 
 // const Graph = require('./dist/graph').DirectedAdjacencyListGraph
 
