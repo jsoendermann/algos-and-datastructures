@@ -1,19 +1,45 @@
-const RedBlackTree = require('./dist/binary-search-tree').RedBlackTree
-const Node = require('./dist/binary-search-tree').Node
+const {
+  iterativePreorder,
+  iterativeInorder,
+  iterativePostorder
+} = require('./dist/binary-tree')
 
-const root = new Node(-1)
-const t = new Node(0)
-const newRoot = new Node(1)
-const subtree = new Node(2)
-root.left = t
-t.left = newRoot
-newRoot.right = subtree
+const root = {
+  val: 1,
+  left: {
+    val: 2,
+    left: {
+      val: 3,
+      left: null,
+      right: null
+    },
+    right: { val: 4, left: null, right: null }
+  },
+  right: {
+    val: 5,
+    left: null,
+    right: { val: 6, left: { val: 7, left: null, right: null }, right: null }
+  }
+}
 
-console.log(root.toString())
+console.log(iterativePostorder(root))
 
-t.rotateRight()
+// const RedBlackTree = require('./dist/binary-search-tree').RedBlackTree
+// const Node = require('./dist/binary-search-tree').Node
 
-console.log(root.toString())
+// const root = new Node(-1)
+// const t = new Node(0)
+// const newRoot = new Node(1)
+// const subtree = new Node(2)
+// root.left = t
+// t.left = newRoot
+// newRoot.right = subtree
+
+// console.log(root.toString())
+
+// t.rotateRight()
+
+// console.log(root.toString())
 
 // const Mean = require('./dist/mean').default
 
